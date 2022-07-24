@@ -1,7 +1,27 @@
+import { useEffect, useState } from 'react';
 import { Header } from './components/Header';
 import { Image } from './components/Image';
+import { getLast10Pictures } from './lib/nasa';
+
+interface Picture {
+  title: string;
+  url: string;
+  date: string;
+}
 
 function App() {
+  const [pictures, setPictures] = useState<Picture[]>([]);
+
+  useEffect(() => {
+    if (pictures.length === 0) {
+      getLast10Pictures()
+        .then((pics) => setPictures(pics))
+        .catch((err) => console.error(err.message));
+    }
+  }, []);
+
+  console.log(pictures);
+
   return (
     <div>
       <Header />
@@ -11,7 +31,14 @@ function App() {
         </h1>
 
         <div className="columns-3 gap-8">
-          <Image />
+          {pictures.map((pic) => (
+            <Image
+              key={pic.date}
+              url={pic.url}
+              date={pic.date}
+              title={pic.title}
+            />
+          ))}
         </div>
       </main>
     </div>
