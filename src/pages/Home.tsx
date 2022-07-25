@@ -6,7 +6,7 @@ import { Image } from '../components/Image';
 import { subtractOneDay } from '../lib/dates';
 import { get10MorePictures, getLast10Pictures } from '../lib/nasa';
 
-const CALLS_LIMIT = 2;
+const CALLS_LIMIT = 10;
 
 interface Picture {
   title: string;
