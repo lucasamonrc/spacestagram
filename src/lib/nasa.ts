@@ -4,7 +4,7 @@ import { formatDate, subtractOneDay, subtractTenDays } from './dates';
 const client = axios.create({
   baseURL: 'https://api.nasa.gov/planetary',
   params: {
-    api_key: import.meta.env.VITE_NASA_API_KEY,
+    api_key: 'EPAcgSew2jltb4d61hcCdgFdIGDkGrxWdXyihbu0',
   },
 });
 
