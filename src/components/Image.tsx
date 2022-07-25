@@ -5,13 +5,33 @@ interface ImageProps {
   title: string;
   date: string;
   url: string;
+  bookmarked?: boolean;
 }
 
-export function Image({ url }: ImageProps) {
-  const [bookmarked, setBookmarked] = useState(false);
+export function Image({ url, title, date, bookmarked = false }: ImageProps) {
+  const [isBookmarked, setIsBookmarked] = useState(() => bookmarked);
 
   function toggleBookmark() {
-    setBookmarked(!bookmarked);
+    if (!isBookmarked) {
+      const image = { title, date, url };
+
+      const pics = JSON.parse(
+        localStorage.getItem('spacestagram@bookmarks') || '[]'
+      ) as any[];
+
+      pics.push(image);
+
+      localStorage.setItem('spacestagram@bookmarks', JSON.stringify(pics));
+    } else {
+      let pics = JSON.parse(
+        localStorage.getItem('spacestagram@bookmarks') || '[]'
+      ) as any[];
+
+      pics = pics.filter((pic) => pic.date !== date);
+      localStorage.setItem('spacestagram@bookmarks', JSON.stringify(pics));
+    }
+
+    setIsBookmarked(!isBookmarked);
   }
 
   return (
@@ -21,7 +41,7 @@ export function Image({ url }: ImageProps) {
         onClick={toggleBookmark}
         className="absolute top-2 right-2 opacity-0 group-hover:opacity-90 transition"
       >
-        <Bookmark size={28} weight={bookmarked ? 'fill' : 'bold'} />
+        <Bookmark size={28} weight={isBookmarked ? 'fill' : 'bold'} />
       </button>
     </div>
   );

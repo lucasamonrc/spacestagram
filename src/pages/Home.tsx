@@ -17,12 +17,22 @@ interface Picture {
 function Home() {
   const [pictures, setPictures] = useState<Picture[]>([]);
   const [counter, setCounter] = useState(0);
+  const [bookmarked, setBookmarked] = useState<string[]>([]);
 
   useEffect(() => {
     if (pictures.length === 0) {
       getLast10Pictures()
         .then((pics) => setPictures(pics))
         .catch((err) => console.error(err.message));
+    }
+
+    if (bookmarked.length === 0) {
+      const pics = JSON.parse(
+        localStorage.getItem('spacestagram@bookmarks') || '[]'
+      ) as Picture[];
+
+      const dates = pics.map((pic) => pic.date);
+      setBookmarked(dates);
     }
   }, []);
 
@@ -32,10 +42,7 @@ function Home() {
 
     const pics = await get10MorePictures(endDate);
 
-    const newPictures = [...pictures, ...pics].sort((a, b) => {
-      if (a.date > b.date) return -1;
-      else return 1;
-    });
+    const newPictures = [...pictures, ...pics];
 
     setPictures(newPictures);
     setCounter(counter + 1);
@@ -59,6 +66,7 @@ function Home() {
               url={pic.url}
               date={pic.date}
               title={pic.title}
+              bookmarked={bookmarked.includes(pic.date)}
             />
           ))}
         </InfiniteScroll>
